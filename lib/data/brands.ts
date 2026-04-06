@@ -146,6 +146,55 @@ export const brands: Brand[] = [
     ],
     lastReviewedDate: '2026-04-01',
   },
+  {
+    slug: 'swann',
+    name: 'Swann',
+    tagline: 'Australian brand, NVR/DVR wired systems, no subscription, wide NZ availability',
+    logoSrc: '/images/brands/swann.png',
+    country: 'Australia',
+    nzAvailability: 'widely-available',
+    nzRetailers: ['JB Hi-Fi', 'Harvey Norman', 'Bunnings', 'The Warehouse'],
+    architectureType: 'poe-nvr-system',
+    storageType: ['local', 'sd-card'],
+    subscriptionRequired: false,
+    offlineCapable: true,
+    rentalFriendly: false,
+    professionalInstallRequired: false,
+    summary:
+      "Swann is an Australian brand with strong NZ distribution — you can buy their systems at Bunnings, Harvey Norman, and JB Hi-Fi. They specialise in NVR and DVR wired systems with local storage, no subscription required, and 24/7 continuous recording. The tradeoff is installation complexity (wiring required) and an app experience that lags well behind Ring and Arlo. For homeowners who want a proper always-on wired system without monthly fees, Swann is a practical and accessible choice.",
+    pros: [
+      'No monthly subscription — ever',
+      'Local NVR/DVR storage included out of the box',
+      '24/7 continuous recording (wired models)',
+      'No motion wake-up delay',
+      'Wide NZ retail availability including Bunnings',
+      'Complete kits available with cameras + recorder bundled',
+    ],
+    cons: [
+      'Wired installation required for NVR systems',
+      'App (Swann Security) is less polished than Ring or Arlo',
+      'Cameras not easily relocatable once installed',
+      'Wired systems require cable runs — not renter-friendly',
+      'Lower camera resolution at entry level vs competitors',
+      'Customer support quality varies',
+    ],
+    expertVerdict:
+      "Swann is the most accessible entry point into wired NVR security in NZ — you can walk into Bunnings today and buy a complete kit. If you own your home, want continuous recording with no ongoing costs, and don't mind a basic app experience, Swann delivers solid value. For renters or anyone wanting a polished wireless system, look at Ring or Arlo instead.",
+    bestFor: [
+      'Homeowners wanting a complete wired kit without a tradesperson',
+      'Anyone who wants 24/7 continuous recording',
+      'Buyers who refuse any monthly subscription',
+      'Driveway and garage coverage with no motion delay',
+      'People who want to buy from a physical NZ store today',
+    ],
+    notIdealFor: [
+      'Renters or anyone who needs portable cameras',
+      'Buyers who want a polished smartphone app experience',
+      'Smart home users with Alexa or Google Home setups',
+      'Anyone who needs cameras operational within 30 minutes',
+    ],
+    lastReviewedDate: '2026-04-01',
+  },
 ]
 
 export function getBrandBySlug(slug: string): Brand | undefined {
