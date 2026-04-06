@@ -41,8 +41,11 @@ const nzRegions: { value: NZRegion; label: string }[] = [
   { value: 'other', label: 'Other / Not sure' },
 ]
 
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdapyedd'
+
 export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
   const [submitted, setSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const {
     register,
@@ -58,11 +61,28 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
   })
 
   async function onSubmit(data: FormValues) {
-    // TODO: Wire to CRM / email endpoint (process.env.NEXT_PUBLIC_FORM_ENDPOINT)
-    await new Promise((r) => setTimeout(r, 800))
-    console.log('Quote form submitted:', data, 'Quiz result:', prefillResult)
-    setSubmitted(true)
-    onSuccess()
+    setSubmitError(null)
+    try {
+      const payload = {
+        ...data,
+        _subject: `New security camera quote request — ${data.suburb}, ${data.region}`,
+        _replyto: data.email,
+        quizResult: prefillResult ?? 'not completed',
+      }
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body?.error ?? 'Submission failed. Please try again.')
+      }
+      setSubmitted(true)
+      onSuccess()
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    }
   }
 
   if (submitted) {
@@ -180,6 +200,12 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
       </div>
 
       <NZPrivacyNote compact className="mt-1" />
+
+      {submitError && (
+        <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-700">
+          {submitError}
+        </div>
+      )}
 
       <Button type="submit" fullWidth size="lg" disabled={isSubmitting}>
         {isSubmitting ? 'Sending…' : 'Send quote request →'}
