@@ -80,6 +80,10 @@ export function SiteFooter() {
         </div>
 
         <div className="border-t border-brand-500 pt-8 space-y-3">
+          <div className="flex flex-wrap gap-4 mb-2">
+            <Link href="/about" className="text-xs text-brand-300 hover:text-white transition-colors">About this site</Link>
+            <Link href="/guides/security-camera-laws-nz" className="text-xs text-brand-300 hover:text-white transition-colors">NZ privacy law guide</Link>
+          </div>
           <p className="text-xs text-brand-300">
             <strong className="text-brand-100">Editorial independence:</strong> Get Secure NZ writes
             independent editorial content. Some pages may include links to retailers. Prices shown are

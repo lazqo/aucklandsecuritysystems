@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { SiteHeader } from '@/components/layout/SiteHeader'
 import { SiteFooter } from '@/components/layout/SiteFooter'
 import { BreadcrumbNav } from '@/components/layout/BreadcrumbNav'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildItemListSchema } from '@/lib/seo/structured-data'
 import { brands } from '@/lib/data/brands'
 import { Badge } from '@/components/ui/Badge'
 
@@ -12,8 +14,20 @@ export const metadata: Metadata = {
 }
 
 export default function BrandsIndexPage() {
+  const listSchema = buildItemListSchema({
+    name: 'Security Camera Brand Reviews — New Zealand',
+    description: 'Independent reviews of home security camera brands available in New Zealand, including Ring, Arlo, Eufy, and Swann.',
+    url: '/brands',
+    items: brands.map((b) => ({
+      name: `${b.name} NZ Review`,
+      url: `/brands/${b.slug}`,
+      description: b.tagline,
+    })),
+  })
+
   return (
     <>
+      <JsonLd data={listSchema} />
       <SiteHeader variant="minimal" />
       <main>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

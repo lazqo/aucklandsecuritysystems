@@ -97,6 +97,34 @@ export function buildBreadcrumbSchema(items: BreadcrumbItem[], currentPath: stri
   }
 }
 
+export function buildItemListSchema({
+  name,
+  description,
+  url,
+  items,
+}: {
+  name: string
+  description: string
+  url: string
+  items: { name: string; url: string; description?: string }[]
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name,
+    description,
+    url: `${SITE_URL}${url}`,
+    numberOfItems: items.length,
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      url: `${SITE_URL}${item.url}`,
+      ...(item.description && { description: item.description }),
+    })),
+  }
+}
+
 export function buildWebApplicationSchema({
   name,
   description,

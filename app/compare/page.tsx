@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { SiteHeader } from '@/components/layout/SiteHeader'
 import { SiteFooter } from '@/components/layout/SiteFooter'
 import { BreadcrumbNav } from '@/components/layout/BreadcrumbNav'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildItemListSchema } from '@/lib/seo/structured-data'
 import { getContentCards } from '@/lib/mdx/utils'
 
 export const metadata: Metadata = {
@@ -13,8 +15,20 @@ export const metadata: Metadata = {
 export default function CompareIndexPage() {
   const cards = getContentCards('compare')
 
+  const listSchema = buildItemListSchema({
+    name: 'Security Camera Brand Comparisons — New Zealand',
+    description: 'Side-by-side comparisons of the most popular home security camera brands in NZ, covering subscriptions, pricing, storage, and reliability.',
+    url: '/compare',
+    items: cards.map((c) => ({
+      name: c.title,
+      url: c.href,
+      description: c.excerpt,
+    })),
+  })
+
   return (
     <>
+      <JsonLd data={listSchema} />
       <SiteHeader variant="minimal" />
       <main>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
