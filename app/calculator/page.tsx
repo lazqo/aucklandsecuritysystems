@@ -10,7 +10,7 @@ import { RelatedLinks } from '@/components/content/RelatedLinks'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildWebApplicationSchema } from '@/lib/seo/structured-data'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cameras.getsecure.co.nz'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aucklandsecuritysystems.co.nz'
 
 export const metadata: Metadata = {
   title: 'Security Camera Total Cost Calculator NZ | Get Secure',

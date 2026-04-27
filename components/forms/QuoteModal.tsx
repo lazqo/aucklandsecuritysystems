@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useAnalytics } from '@/lib/analytics/events'
 import { QuoteForm } from './QuoteForm'
+import { GET_SECURE } from '@/lib/business/get-secure'
 import type { ArchitectureType } from '@/types'
 
 interface QuoteModalProps {
@@ -66,8 +67,10 @@ export function QuoteModal({ isOpen, onClose, prefillResult, source = 'general' 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-neutral-100">
           <div>
-            <h2 className="font-bold text-neutral-900">Get a free quote</h2>
-            <p className="text-sm text-neutral-500">A Get Secure expert will contact you within 1 business day.</p>
+            <h2 className="font-bold text-neutral-900">Get a free Auckland security quote</h2>
+            <p className="text-sm text-neutral-500">
+              {GET_SECURE.name} will review your request and contact you within 1 business day.
+            </p>
           </div>
           <button
             onClick={handleClose}

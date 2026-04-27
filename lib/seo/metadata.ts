@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getCurrentYear } from '@/lib/utils'
 
 const SITE_NAME = 'Get Secure NZ'
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cameras.getsecure.co.nz'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aucklandsecuritysystems.co.nz'
 const DEFAULT_OG_IMAGE = '/og/default.png'
 
 interface BuildMetadataOptions {

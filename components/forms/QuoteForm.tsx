@@ -7,15 +7,20 @@ import { z } from 'zod'
 import type { ArchitectureType, NZRegion } from '@/types'
 import { Button } from '@/components/ui/Button'
 import { NZPrivacyNote } from '@/components/compliance/NZPrivacyNote'
+import { GET_SECURE } from '@/lib/business/get-secure'
 
 const schema = z.object({
   name: z.string().min(2, 'Please enter your name'),
   email: z.string().email('Please enter a valid email address'),
-  phone: z.string().optional(),
+  phone: z.string().min(7, 'Please enter your phone number'),
   suburb: z.string().min(2, 'Please enter your suburb'),
   region: z.string().min(1, 'Please select a region'),
   cameraCount: z.number().min(1).max(100),
   propertyType: z.enum(['house', 'apartment', 'rental', 'business']),
+  serviceType: z.enum(['cctv', 'alarm', 'intercom', 'networking', 'repair', 'not-sure']),
+  urgency: z.enum(['researching', 'soon', 'urgent']),
+  existingSystem: z.enum(['no', 'yes', 'not-sure']),
+  preferredContactTime: z.string().optional(),
   message: z.string().optional(),
   consentMarketing: z.boolean(),
 })
@@ -41,7 +46,17 @@ const nzRegions: { value: NZRegion; label: string }[] = [
   { value: 'other', label: 'Other / Not sure' },
 ]
 
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdapyedd'
+const FORMSPREE_ENDPOINT =
+  process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT ?? 'https://formspree.io/f/mdapyedd'
+
+function estimateLeadQuality(data: FormValues) {
+  if (data.region === 'auckland' && (data.urgency === 'urgent' || data.cameraCount >= 4 || data.propertyType === 'business')) {
+    return 'high-intent'
+  }
+  if (data.region === 'auckland' && data.urgency === 'soon') return 'good-fit'
+  if (data.serviceType === 'repair') return 'service-request'
+  return 'researching'
+}
 
 export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
   const [submitted, setSubmitted] = useState(false)
@@ -56,6 +71,9 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
     defaultValues: {
       cameraCount: 2,
       propertyType: 'house',
+      serviceType: 'cctv',
+      urgency: 'soon',
+      existingSystem: 'no',
       consentMarketing: false,
     },
   })
@@ -63,11 +81,14 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
   async function onSubmit(data: FormValues) {
     setSubmitError(null)
     try {
+      const leadQuality = estimateLeadQuality(data)
       const payload = {
         ...data,
-        _subject: `New security camera quote request — ${data.suburb}, ${data.region}`,
+        leadQuality,
+        _subject: `New ${leadQuality} security lead — ${data.suburb}, ${data.region}`,
         _replyto: data.email,
         quizResult: prefillResult ?? 'not completed',
+        sourceSite: 'aucklandsecuritysystems.co.nz',
       }
       const res = await fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
@@ -91,7 +112,10 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
         <div className="text-4xl mb-4">✅</div>
         <h3 className="font-bold text-neutral-900 mb-2">Quote request sent!</h3>
         <p className="text-sm text-neutral-500">
-          We&apos;ll be in touch within 1 business day.
+          We&apos;ll review it and contact you within 1 business day. If it is urgent, call{' '}
+          <a href={GET_SECURE.phoneHref} className="font-semibold text-brand-600 hover:text-brand-700">
+            {GET_SECURE.phoneDisplay}
+          </a>.
         </p>
       </div>
     )
@@ -110,6 +134,13 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
         </div>
       )}
 
+      <div className="rounded-2xl bg-brand-50 border border-brand-100 p-4 text-sm text-brand-800">
+        <p className="font-semibold text-brand-900 mb-1">Installed by {GET_SECURE.name}</p>
+        <p>
+          Free quote, no pressure. An Auckland-based installer reviews your request and suggests the simplest reliable setup.
+        </p>
+      </div>
+
       {/* Name + Email */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -126,15 +157,16 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
 
       {/* Phone */}
       <div>
-        <label htmlFor="phone" className={labelClass}>Phone (optional)</label>
+        <label htmlFor="phone" className={labelClass}>Phone *</label>
         <input id="phone" type="tel" autoComplete="tel" {...register('phone')} placeholder="e.g. 021 000 0000" className={inputClass} />
+        {errors.phone && <p className={errorClass}>{errors.phone.message}</p>}
       </div>
 
       {/* Suburb + Region */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label htmlFor="suburb" className={labelClass}>Suburb *</label>
-          <input id="suburb" type="text" {...register('suburb')} placeholder="e.g. Ponsonby" className={inputClass} />
+          <input id="suburb" type="text" {...register('suburb')} placeholder="e.g. Henderson" className={inputClass} />
           {errors.suburb && <p className={errorClass}>{errors.suburb.message}</p>}
         </div>
         <div>
@@ -146,6 +178,29 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
             ))}
           </select>
           {errors.region && <p className={errorClass}>{errors.region.message}</p>}
+        </div>
+      </div>
+
+      {/* Service + Urgency */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="serviceType" className={labelClass}>What do you need? *</label>
+          <select id="serviceType" {...register('serviceType')} className={inputClass}>
+            <option value="cctv">Security cameras / CCTV</option>
+            <option value="alarm">Alarm system</option>
+            <option value="intercom">Intercom</option>
+            <option value="networking">Networking / Wi‑Fi</option>
+            <option value="repair">Repair / service</option>
+            <option value="not-sure">Not sure yet</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="urgency" className={labelClass}>Timing *</label>
+          <select id="urgency" {...register('urgency')} className={inputClass}>
+            <option value="researching">Just researching</option>
+            <option value="soon">Need advice/quote soon</option>
+            <option value="urgent">Urgent / security concern</option>
+          </select>
         </div>
       </div>
 
@@ -161,6 +216,7 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
             {...register('cameraCount', { valueAsNumber: true })}
             className={inputClass}
           />
+          {errors.cameraCount && <p className={errorClass}>{errors.cameraCount.message}</p>}
         </div>
         <div>
           <label htmlFor="propertyType" className={labelClass}>Property type</label>
@@ -173,6 +229,28 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
         </div>
       </div>
 
+      {/* Existing system + Contact time */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="existingSystem" className={labelClass}>Existing system?</label>
+          <select id="existingSystem" {...register('existingSystem')} className={inputClass}>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+            <option value="not-sure">Not sure</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="preferredContactTime" className={labelClass}>Best time to call</label>
+          <input
+            id="preferredContactTime"
+            type="text"
+            {...register('preferredContactTime')}
+            placeholder="e.g. weekday morning"
+            className={inputClass}
+          />
+        </div>
+      </div>
+
       {/* Message */}
       <div>
         <label htmlFor="message" className={labelClass}>Anything else? (optional)</label>
@@ -180,7 +258,7 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
           id="message"
           rows={3}
           {...register('message')}
-          placeholder="Tell us about your property, specific concerns, or budget…"
+          placeholder="Tell us about the property, problem areas, driveway, gates, budget, or install timing…"
           className={`${inputClass} resize-none`}
         />
       </div>
@@ -212,7 +290,10 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
       </Button>
 
       <p className="text-xs text-neutral-400 text-center">
-        No obligation. A Get Secure expert will reply within 1 business day.
+        No obligation. Free site visits for quote jobs. For urgent jobs call{' '}
+        <a href={GET_SECURE.phoneHref} className="font-semibold text-neutral-500 hover:text-brand-600">
+          {GET_SECURE.phoneDisplay}
+        </a>.
       </p>
     </form>
   )
