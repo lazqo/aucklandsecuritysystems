@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Camera } from '@phosphor-icons/react/dist/ssr'
 import { GET_SECURE } from '@/lib/business/get-secure'
+import { TrackedLink } from '@/components/analytics/TrackedLink'
 
 export function SiteFooter() {
   const currentYear = new Date().getFullYear()
@@ -21,8 +22,16 @@ export function SiteFooter() {
               New Zealand&apos;s home security camera guide. Independent advice with optional Auckland installation by Get Secure.
             </p>
             <div className="mt-3 space-y-1 text-xs text-brand-200">
-              <p><a href={GET_SECURE.phoneHref} className="hover:text-white transition-colors">{GET_SECURE.phoneDisplay}</a></p>
-              <p><a href={GET_SECURE.url} className="hover:text-white transition-colors">getsecure.co.nz</a></p>
+              <p>
+                <TrackedLink href={GET_SECURE.phoneHref} location="footer" kind="phone" className="hover:text-white transition-colors">
+                  {GET_SECURE.phoneDisplay}
+                </TrackedLink>
+              </p>
+              <p>
+                <TrackedLink href={GET_SECURE.url} location="footer" kind="outbound-getsecure" className="hover:text-white transition-colors" external>
+                  getsecure.co.nz
+                </TrackedLink>
+              </p>
             </div>
           </div>
 
