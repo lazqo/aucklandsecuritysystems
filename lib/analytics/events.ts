@@ -24,7 +24,11 @@ export type AnalyticsEventName =
   | 'compare_page_view'
   | 'quote_modal_open'
   | 'quote_modal_close'
+  | 'quote_form_start'
   | 'quote_form_submit'
+  | 'quote_cta_click'
+  | 'phone_click'
+  | 'outbound_getsecure_click'
   | 'shortlist_capture_submit'
   | 'affiliate_link_click'
   | 'sticky_cta_click'
@@ -50,7 +54,11 @@ export type AnalyticsEventProperties = {
   compare_page_view: { brand_a: string; brand_b: string }
   quote_modal_open: { source: string }
   quote_modal_close: { source: string; completed: boolean }
-  quote_form_submit: { source: string; region: string; camera_count: number }
+  quote_form_start: { source: string; page_path: string }
+  quote_form_submit: { source: string; region: string; camera_count: number; service_type?: string; urgency?: string; lead_quality?: string }
+  quote_cta_click: { label: string; href: string; location: string; page_path: string }
+  phone_click: { location: string; page_path: string }
+  outbound_getsecure_click: { location: string; page_path: string }
   shortlist_capture_submit: { result_type: ArchitectureType }
   affiliate_link_click: { brand: string; retailer: string; product?: string }
   sticky_cta_click: { label: string; page_context: string }

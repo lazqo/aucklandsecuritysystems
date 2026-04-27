@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useAnalytics } from '@/lib/analytics/events'
-import { QuoteForm } from './QuoteForm'
+import { QuoteForm, type QuoteFormSuccessData } from './QuoteForm'
 import { GET_SECURE } from '@/lib/business/get-secure'
 import type { ArchitectureType } from '@/types'
 
@@ -43,8 +43,15 @@ export function QuoteModal({ isOpen, onClose, prefillResult, source = 'general' 
     onClose()
   }
 
-  function handleSuccess() {
-    track('quote_form_submit', { source, region: 'unknown', camera_count: 0 })
+  function handleSuccess(data: QuoteFormSuccessData) {
+    track('quote_form_submit', {
+      source,
+      region: data.region,
+      camera_count: data.cameraCount,
+      service_type: data.serviceType,
+      urgency: data.urgency,
+      lead_quality: data.leadQuality,
+    })
     onClose()
   }
 
@@ -85,7 +92,7 @@ export function QuoteModal({ isOpen, onClose, prefillResult, source = 'general' 
 
         {/* Form */}
         <div className="px-6 py-5">
-          <QuoteForm onSuccess={handleSuccess} prefillResult={prefillResult} />
+          <QuoteForm onSuccess={handleSuccess} prefillResult={prefillResult} source={source} />
         </div>
       </div>
     </div>

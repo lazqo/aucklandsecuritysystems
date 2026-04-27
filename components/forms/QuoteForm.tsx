@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useAnalytics } from '@/lib/analytics/events'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -27,9 +28,12 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>
 
+export type QuoteFormSuccessData = FormValues & { leadQuality: string }
+
 interface QuoteFormProps {
-  onSuccess: () => void
+  onSuccess: (data: QuoteFormSuccessData) => void
   prefillResult?: ArchitectureType
+  source?: string
 }
 
 const nzRegions: { value: NZRegion; label: string }[] = [
@@ -58,9 +62,11 @@ function estimateLeadQuality(data: FormValues) {
   return 'researching'
 }
 
-export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
+export function QuoteForm({ onSuccess, prefillResult, source = 'quote_form' }: QuoteFormProps) {
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [hasStarted, setHasStarted] = useState(false)
+  const { track } = useAnalytics()
 
   const {
     register,
@@ -100,7 +106,7 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
         throw new Error(body?.error ?? 'Submission failed. Please try again.')
       }
       setSubmitted(true)
-      onSuccess()
+      onSuccess({ ...data, leadQuality })
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     }
@@ -127,7 +133,20 @@ export function QuoteForm({ onSuccess, prefillResult }: QuoteFormProps) {
   const errorClass = 'text-xs text-red-600 mt-1'
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      onFocusCapture={() => {
+        if (!hasStarted) {
+          setHasStarted(true)
+          track('quote_form_start', {
+            source,
+            page_path: typeof window === 'undefined' ? '' : window.location.pathname,
+          })
+        }
+      }}
+      className="space-y-4"
+      noValidate
+    >
       {prefillResult && (
         <div className="bg-brand-50 border border-brand-100 rounded-xl p-3 text-xs text-brand-700">
           Your quiz result ({prefillResult.replace(/-/g, ' ')}) will be included with your request.
