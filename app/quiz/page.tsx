@@ -7,7 +7,7 @@ import { QuizWizard } from '@/components/quiz/QuizWizard'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildWebApplicationSchema } from '@/lib/seo/structured-data'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cameras.getsecure.co.nz'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aucklandsecuritysystems.co.nz'
 
 export const metadata: Metadata = {
   title: 'Find My Best Security Camera — 2-Minute Quiz | Get Secure NZ',

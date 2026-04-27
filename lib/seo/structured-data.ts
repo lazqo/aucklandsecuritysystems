@@ -1,7 +1,8 @@
 import type { FAQ, BreadcrumbItem } from '@/types'
+import { GET_SECURE, AUCKLAND_AREAS } from '@/lib/business/get-secure'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cameras.getsecure.co.nz'
-const ORG_NAME = 'Get Secure Ltd'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aucklandsecuritysystems.co.nz'
+const ORG_NAME = GET_SECURE.legalName
 
 export function buildOrganizationSchema() {
   return {
@@ -10,11 +11,13 @@ export function buildOrganizationSchema() {
     name: ORG_NAME,
     url: SITE_URL,
     description: 'New Zealand security company specialising in home and business security camera installation.',
-    areaServed: 'NZ',
+    areaServed: GET_SECURE.serviceArea,
     contactPoint: {
       '@type': 'ContactPoint',
+      telephone: GET_SECURE.phoneDisplay,
+      email: GET_SECURE.email,
       contactType: 'customer service',
-      areaServed: 'NZ',
+      areaServed: GET_SECURE.serviceArea,
       availableLanguage: 'English',
     },
   }
@@ -146,6 +149,60 @@ export function buildWebApplicationSchema({
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'NZD',
+    },
+  }
+}
+
+export function buildLocalBusinessSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: GET_SECURE.name,
+    legalName: GET_SECURE.legalName,
+    url: GET_SECURE.url,
+    telephone: GET_SECURE.phoneDisplay,
+    email: GET_SECURE.email,
+    areaServed: AUCKLAND_AREAS.map((area) => ({
+      '@type': 'Place',
+      name: area,
+    })),
+    description:
+      'Auckland security installer providing CCTV, alarm, intercom and networking services for homes and businesses.',
+    sameAs: [GET_SECURE.url],
+  }
+}
+
+export function buildSecurityInstallationServiceSchema({
+  name = 'Security camera installation Auckland',
+  url = '/security-camera-installation-auckland',
+  description = 'Professional CCTV and security camera installation for Auckland homes and businesses.',
+}: {
+  name?: string
+  url?: string
+  description?: string
+} = {}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name,
+    description,
+    url: `${SITE_URL}${url}`,
+    provider: {
+      '@type': 'LocalBusiness',
+      name: GET_SECURE.name,
+      url: GET_SECURE.url,
+      telephone: GET_SECURE.phoneDisplay,
+    },
+    serviceType: 'Security camera installation',
+    areaServed: AUCKLAND_AREAS.map((area) => ({
+      '@type': 'Place',
+      name: area,
+    })),
+    offers: {
+      '@type': 'Offer',
+      availability: 'https://schema.org/InStock',
+      priceCurrency: 'NZD',
+      description: 'Free site visits for quote jobs. Final pricing depends on property layout, camera count and hardware choice.',
     },
   }
 }

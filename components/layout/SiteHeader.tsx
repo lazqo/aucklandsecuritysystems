@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Camera } from '@phosphor-icons/react/dist/ssr'
+import { GET_SECURE } from '@/lib/business/get-secure'
 
 interface SiteHeaderProps {
   variant?: 'minimal' | 'full'
@@ -50,6 +51,12 @@ export function SiteHeader({ variant = 'minimal' }: SiteHeaderProps) {
 
           {/* CTA */}
           <div className="flex items-center gap-3">
+            <a
+              href={GET_SECURE.phoneHref}
+              className="hidden lg:inline-flex text-sm font-semibold text-brand-600 hover:text-accent-500 transition-colors"
+            >
+              {GET_SECURE.phoneDisplay}
+            </a>
             <Link
               href="/quiz"
               className="hidden sm:inline-flex text-sm font-medium text-brand-500 hover:text-accent-500 transition-colors"

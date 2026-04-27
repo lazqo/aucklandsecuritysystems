@@ -11,7 +11,7 @@ import { TrustBar } from '@/components/hub/TrustBar'
 import { NZPrivacyNote } from '@/components/compliance/NZPrivacyNote'
 import { QuoteModalTrigger } from '@/components/hub/QuoteModalTrigger'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cameras.getsecure.co.nz'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aucklandsecuritysystems.co.nz'
 
 export const metadata: Metadata = {
   title: 'Which Home Security Camera Is Right for Me? | Get Secure NZ',

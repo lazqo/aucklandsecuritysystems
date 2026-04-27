@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Check } from '@phosphor-icons/react/dist/ssr'
+import { GET_SECURE } from '@/lib/business/get-secure'
 
 interface HeroSectionProps {
   headline?: string
@@ -11,10 +12,10 @@ interface HeroSectionProps {
 
 export function HeroSection({
   headline = 'Which home security camera is right for you?',
-  subheadline = 'Compare DIY cameras, subscriptions, power types and storage in one place. Answer 8 quick questions and get a personalised recommendation — no jargon, no pressure.',
+  subheadline = 'Compare DIY cameras, subscriptions, power types and storage in one place. Answer 8 quick questions and get a personalised recommendation — then ask an Auckland installer if you want a proper quote.',
   primaryCTA = { label: 'Find my best setup →', href: '/quiz' },
-  secondaryCTA = { label: 'Get expert advice', href: '/?quote=open' },
-  trustSignals = ['NZ-based advice', 'Free to use', 'No affiliate pressure', 'Updated April 2026'],
+  secondaryCTA = { label: 'Ask an Auckland installer', href: '/?quote=open' },
+  trustSignals = ['NZ-based advice', 'Free to use', 'No affiliate pressure', 'Installed by Get Secure'],
 }: HeroSectionProps) {
   return (
     <section className="bg-gradient-to-b from-brand-50 to-white py-16 sm:py-24">
@@ -52,7 +53,7 @@ export function HeroSection({
           </div>
 
           {/* Trust signals */}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 mb-6">
             {trustSignals.map((signal) => (
               <span key={signal} className="flex items-center gap-1.5 text-sm text-neutral-500">
                 <Check
@@ -63,6 +64,13 @@ export function HeroSection({
                 {signal}
               </span>
             ))}
+          </div>
+
+          <div className="rounded-2xl border border-brand-100 bg-white/80 p-4 text-sm text-neutral-600 shadow-sm max-w-2xl">
+            <p className="font-semibold text-brand-700 mb-1">Want a professional install?</p>
+            <p>
+              {GET_SECURE.name} handles CCTV, alarms, intercoms and networking across Auckland. Free site visits for quote jobs, with 3-year product warranty and 5-year workmanship warranty.
+            </p>
           </div>
         </div>
       </div>

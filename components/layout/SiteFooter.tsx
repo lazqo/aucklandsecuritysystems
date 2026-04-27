@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Camera } from '@phosphor-icons/react/dist/ssr'
+import { GET_SECURE } from '@/lib/business/get-secure'
 
 export function SiteFooter() {
   const currentYear = new Date().getFullYear()
@@ -17,8 +18,12 @@ export function SiteFooter() {
               <span className="text-sm font-bold text-white">Get Secure NZ</span>
             </div>
             <p className="text-xs leading-relaxed text-brand-300">
-              New Zealand&apos;s home security camera guide. Independent advice, no affiliate pressure.
+              New Zealand&apos;s home security camera guide. Independent advice with optional Auckland installation by Get Secure.
             </p>
+            <div className="mt-3 space-y-1 text-xs text-brand-200">
+              <p><a href={GET_SECURE.phoneHref} className="hover:text-white transition-colors">{GET_SECURE.phoneDisplay}</a></p>
+              <p><a href={GET_SECURE.url} className="hover:text-white transition-colors">getsecure.co.nz</a></p>
+            </div>
           </div>
 
           {/* Tools */}
@@ -85,10 +90,7 @@ export function SiteFooter() {
             <Link href="/guides/security-camera-laws-nz" className="text-xs text-brand-300 hover:text-white transition-colors">NZ privacy law guide</Link>
           </div>
           <p className="text-xs text-brand-300">
-            <strong className="text-brand-100">Editorial independence:</strong> Get Secure NZ writes
-            independent editorial content. Some pages may include links to retailers. Prices shown are
-            estimates — verify with retailers before purchasing. Subscription plans change frequently;
-            always check the brand directly for current NZ pricing.
+            <strong className="text-brand-100">Editorial independence:</strong> This site gives practical buyer guidance and may recommend DIY or professional options depending on the situation. Quote requests are handled by Get Secure NZ. Prices shown are estimates — verify current hardware, subscription and installation costs before purchasing.
           </p>
           <p className="text-xs text-brand-400">
             © {currentYear} Get Secure Ltd. New Zealand. All rights reserved.

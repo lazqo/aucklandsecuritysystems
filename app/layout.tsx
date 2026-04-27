@@ -19,7 +19,7 @@ const dmSans = DM_Sans({
   weight: ['400', '500', '600'],
 })
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://cameras.getsecure.co.nz'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aucklandsecuritysystems.co.nz'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
